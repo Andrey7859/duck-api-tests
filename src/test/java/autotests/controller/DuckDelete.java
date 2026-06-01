@@ -58,7 +58,7 @@ public class DuckDelete extends TestNGCitrusSpringSupport {
                         .type(MessageType.JSON)
                         .validate(jsonPath().expression("$.message", "Duck is deleted")));
     }
-    
+
     @Test(description = "Удаление утки")
     @CitrusTest
     public void deleteDuckTest(@Optional @CitrusResource TestCaseRunner runner) {

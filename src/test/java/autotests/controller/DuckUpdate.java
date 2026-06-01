@@ -19,7 +19,8 @@ public class DuckUpdate extends TestNGCitrusSpringSupport {
 
     public void createDuck(TestCaseRunner runner, String color, double height, String material, String sound, String wingsState) {
         runner.$(
-                http().client(URL)
+                http()
+                        .client(URL)
                         .send()
                         .post("/api/duck/create")
                         .message().contentType(MediaType.APPLICATION_JSON_VALUE).body("{\n" +
