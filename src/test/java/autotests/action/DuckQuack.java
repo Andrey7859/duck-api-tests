@@ -47,14 +47,15 @@ public class DuckQuack extends TestNGCitrusSpringSupport {
 
     @Test(description = "Утка крякает нечётный id, корректный звук")
     @CitrusTest
-    public void quackWithEvenId(@Optional @CitrusResource TestCaseRunner runner) {
+    public void quackWithEvenIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         getQuack(runner, "1", "2", "3");
         validateResponse(runner, "quack-quack, quack-quack, quack-quack");
     }
 
+    //TODO (ОР: "quack-quack, quack-quack", quack-quack. ФР: "moo-moo, moo-moo, moo-moo")
     @Test(description = "Утка крякает чётный id, корректный звук")
     @CitrusTest
-    public void quackWithOddId(@Optional @CitrusResource TestCaseRunner runner) {
+    public void quackWithOddIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         getQuack(runner, "2", "2", "3");
         validateResponse(runner, "moo-moo, moo-moo, moo-moo");
     }

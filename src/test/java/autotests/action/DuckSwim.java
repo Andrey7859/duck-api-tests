@@ -39,6 +39,15 @@ public class DuckSwim extends TestNGCitrusSpringSupport {
                         .message().extract(fromBody().expression("$.id", "duckId")));
     }
 
+    public void deleteDuck(TestCaseRunner runner, String duckId) {
+        runner.$(
+                http()
+                        .client(URL)
+                        .send()
+                        .delete("/api/duck/delete")
+                        .queryParam("id", duckId));
+    }
+
     public void getSwim(TestCaseRunner runner, String id) {
         runner.$(
                 http()
@@ -48,32 +57,34 @@ public class DuckSwim extends TestNGCitrusSpringSupport {
                         .queryParam("id", id));
     }
 
-    public void validateResponse(TestCaseRunner runner, String valueForValidate) {
+    public void validateResponse(TestCaseRunner runner, HttpStatus status, String valueForValidate) {
         runner.$(
                 http()
                         .client(URL)
                         .receive()
-                        .response(HttpStatus.NOT_FOUND)
+                        .response(status)
                         .message()
                         .type(MessageType.JSON)
                         .validate(jsonPath().expression("$.message", valueForValidate)));
     }
 
+    //TODO (ОР: Код ответа 200 и корректное сообшение ФР: Код 404 и некорректное сообщение "Paws are not found ((((")
     @Test(description = "Уточка с существующим id плывет")
     @CitrusTest
-    public void SwimWithExistID(@Optional @CitrusResource TestCaseRunner runner) {
+    public void SwimWithExistIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         createDuck(runner, "black", 0.20, "wood", "quack", "ACTIVE");
         saveDuckId(runner);
         getSwim(runner, "${duckId}");
-        validateResponse(runner, "Paws are not found ((((");
+        validateResponse(runner, HttpStatus.NOT_FOUND, "Paws are not found ((((");
     }
 
     @Test(description = "Уточка с несуществующим id плывет")
     @CitrusTest
-    public void swimWithNonExistingId(@Optional @CitrusResource TestCaseRunner runner) {
+    public void swimWithNonExistingIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         createDuck(runner, "black", 0.20, "wood", "quack", "ACTIVE");
         saveDuckId(runner);
-        getSwim(runner, "777777777777");
-        validateResponse(runner, "Paws are not found ((((");
+        deleteDuck(runner, "${duckId}");
+        getSwim(runner, "${duckId}");
+        validateResponse(runner, HttpStatus.NOT_FOUND, "Paws are not found ((((");
     }
 }

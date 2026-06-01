@@ -43,7 +43,7 @@ public class DuckCreate extends TestNGCitrusSpringSupport {
     @Test(description = "Создание утки с material = rubber")
     @CitrusTest
     public void createDuckRubberTest(@Optional @CitrusResource TestCaseRunner runner) {
-        createDuck(runner, "black", 0.20, "rubber", "quack", "ACTIVE");
+        createDuck(runner, "black", 0.2, "rubber", "quack", "ACTIVE");
         validateResponse(runner, "{" +
                 "\"id\": \"@ignore@\"," +
                 "\"color\":\"black\"," +
@@ -57,7 +57,7 @@ public class DuckCreate extends TestNGCitrusSpringSupport {
     @Test(description = "Создание утки с material = wood")
     @CitrusTest
     public void createDuckWoodTest(@Optional @CitrusResource TestCaseRunner runner) {
-        createDuck(runner, "black", 0.20, "wood", "quack", "ACTIVE");
+        createDuck(runner, "black", 0.2, "wood", "quack", "ACTIVE");
         validateResponse(runner, "{" +
                 "\"id\": \"@ignore@\"," +
                 "\"color\":\"black\"," +

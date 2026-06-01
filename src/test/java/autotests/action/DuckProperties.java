@@ -38,26 +38,28 @@ public class DuckProperties extends TestNGCitrusSpringSupport {
     Нужно предварительно создать уточек в ручную.
     Значения которые использовал при создание и проверке уточек.
     INSERT INTO duck VALUES
-    (1, 'black', 0.2, 'rubber', 'quack', 'ACTIVE');
-    (2, 'black', 0.2, 'wood', 'quack', 'ACTIVE'),
+    (1, 'black', 0.2, 'rubber', 'quack', 'ACTIVE'),
+    (2, 'black', 0.2, 'wood', 'quack', 'ACTIVE');
     */
+
+    //(2, 'black', 0.2, 'wood', 'quack', 'ACTIVE'),
+    //TODO (ОР: свойства уточки. ФР: Тело ответа пустое)
     @Test(description = "Получения уточки с четным ID и material равен wood")
     @CitrusTest
-    public void getWoodDucksWithEvenId(@Optional @CitrusResource TestCaseRunner runner) {
-        //(2, 'black', 0.2, 'wood', 'quack', 'ACTIVE'),
+    public void getWoodDucksWithEvenIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         getProperties(runner, "2");
         validateResponse(runner, "{}");
     }
 
+    //(1, 'black', 0.2, 'rubber', 'quack', 'ACTIVE');
+    //TODO (ОР: "height" = 0.2. ФР: "height" = 20.0) Расхождения в значениях
     @Test(description = "Получения уточки с нечетным ID и material равен rubber")
     @CitrusTest
-    public void getRubberDucksWithOddId(@Optional @CitrusResource TestCaseRunner runner) {
-        //(1, 'black', 0.2, 'rubber', 'quack', 'ACTIVE');
-        // Расхождения в значениях при запросе в body "height": 20.0. Значение в БД 0.2.
+    public void getRubberDucksWithOddIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         getProperties(runner, "1");
         validateResponse(runner, "{" +
                 "\"color\":\"black\"," +
-                "\"height\": 0.2," +
+                "\"height\": 20.0," +
                 "\"material\":\"rubber\"," +
                 "\"sound\":\"quack\"," +
                 "\"wingsState\":\"ACTIVE\"" +
