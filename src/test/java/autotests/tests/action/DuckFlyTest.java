@@ -1,6 +1,8 @@
 package autotests.tests.action;
 
 import autotests.clients.FlyClient;
+import autotests.payloads.request.PropertiesRequest;
+import autotests.payloads.response.UniversalMessageResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
@@ -13,14 +15,22 @@ public class DuckFlyTest extends FlyClient {
     @CitrusTest
     public void wingsStateActiveTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        createDuck(runner, "black", 0.20, "wood", "quack", "ACTIVE");
+        PropertiesRequest properties = new PropertiesRequest()
+                .color("black")
+                .height(0.20)
+                .material("wood")
+                .sound("quack")
+                .wingsState("ACTIVE");
+        createDuck(runner, properties);
         String id = getDuckId(runner);
+        UniversalMessageResponse expected = new UniversalMessageResponse()
+                .message("I am flying :)");
 
         // do
         getFly(runner, id);
 
         // check
-        validateResponse(runner, HttpStatus.OK, "{\"message\": \"I am flying :)\"}");
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         deleteDuck(runner, id);
@@ -30,14 +40,20 @@ public class DuckFlyTest extends FlyClient {
     @CitrusTest
     public void wingsStateFixedTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        createDuck(runner, "black", 0.20, "wood", "quack", "FIXED");
+        PropertiesRequest properties = new PropertiesRequest()
+                .color("black")
+                .height(0.20)
+                .material("wood")
+                .sound("quack")
+                .wingsState("FIXED");
+        createDuck(runner, properties);
         String id = getDuckId(runner);
 
         // do
         getFly(runner, id);
 
         // check
-        validateResponse(runner, HttpStatus.OK, "{\"message\": \"I can not fly :C\"}");
+        validateResponseResources(runner, HttpStatus.OK, "response/duckFlyTest/wingsStateFixed.json");
 
         // repair
         deleteDuck(runner, id);
@@ -47,7 +63,13 @@ public class DuckFlyTest extends FlyClient {
     @CitrusTest
     public void wingsStateUndefinedTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        createDuck(runner, "black", 0.20, "wood", "quack", "UNDEFINED");
+        PropertiesRequest properties = new PropertiesRequest()
+                .color("black")
+                .height(0.20)
+                .material("wood")
+                .sound("quack")
+                .wingsState("UNDEFINED");
+        createDuck(runner, properties);
         String id = getDuckId(runner);
 
         // do

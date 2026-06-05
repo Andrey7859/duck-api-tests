@@ -1,6 +1,7 @@
 package autotests.tests.action;
 
 import autotests.clients.SwimClient;
+import autotests.payloads.request.PropertiesRequest;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
@@ -14,14 +15,20 @@ public class DuckSwimTest extends SwimClient {
     @CitrusTest
     public void SwimWithExistIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        createDuck(runner, "black", 0.20, "wood", "quack", "ACTIVE");
+        PropertiesRequest properties = new PropertiesRequest()
+                .color("black")
+                .height(0.20)
+                .material("wood")
+                .sound("quack")
+                .wingsState("ACTIVE");
+        createDuck(runner, properties);
         String id = getDuckId(runner);
 
         // do
         getSwim(runner, id);
 
         // check
-        validateResponse(runner, HttpStatus.NOT_FOUND, "{\"message\": \"Paws are not found ((((\"}");
+        validateResponseResources(runner, HttpStatus.NOT_FOUND, "response/duckSwimTest/swimWithExistId.json");
 
         // repair
         deleteDuck(runner, id);
@@ -31,7 +38,13 @@ public class DuckSwimTest extends SwimClient {
     @CitrusTest
     public void swimWithNonExistingIdTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        createDuck(runner, "black", 0.20, "wood", "quack", "ACTIVE");
+        PropertiesRequest properties = new PropertiesRequest()
+                .color("black")
+                .height(0.20)
+                .material("wood")
+                .sound("quack")
+                .wingsState("ACTIVE");
+        createDuck(runner, properties);
         String id = getDuckId(runner);
         deleteDuck(runner, id);
 
