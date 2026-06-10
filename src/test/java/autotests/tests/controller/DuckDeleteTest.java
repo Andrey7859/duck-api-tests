@@ -1,7 +1,6 @@
 package autotests.tests.controller;
 
 import autotests.clients.DuckClient;
-import autotests.payloads.request.PropertiesRequest;
 import autotests.payloads.response.UniversalMessageResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
@@ -22,17 +21,17 @@ public class DuckDeleteTest extends DuckClient {
     @CitrusTest
     public void deleteDuckTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        runner.variable("duckId","citrus:randomNumber(4,false)");
+        runner.variable("duckId", "citrus:randomNumber(4,false)");
         executeDatabase(runner, "INSERT INTO Duck (id, color, height, material, sound, wings_state) \n" +
                 "VALUES ('${duckId}','black', 0.2, 'rubber', 'quack', 'ACTIVE');");
         UniversalMessageResponse expected = new UniversalMessageResponse()
                 .message("Duck is deleted");
 
-       // do
+        // do
         deleteDuck(runner, "${duckId}");
 
         // check
-        validateResponsePayload(runner, HttpStatus.OK, expected, false);
-        validateDuckDeleteDatabase(runner,"${duckId}");
+        validateResponsePayload(runner, HttpStatus.OK, expected);
+        validateDuckDeleteDatabase(runner, "${duckId}");
     }
 }

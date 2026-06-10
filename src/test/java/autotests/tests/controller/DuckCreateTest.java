@@ -2,7 +2,6 @@ package autotests.tests.controller;
 
 import autotests.clients.DuckClient;
 import autotests.payloads.request.PropertiesRequest;
-import autotests.payloads.response.PropertiesResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;

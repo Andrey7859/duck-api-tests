@@ -1,7 +1,6 @@
 package autotests.tests.controller;
 
 import autotests.clients.UpdateClient;
-import autotests.payloads.request.PropertiesRequest;
 import autotests.payloads.response.UniversalMessageResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
@@ -21,7 +20,7 @@ public class DuckUpdateTest extends UpdateClient {
     @CitrusTest
     public void updateColorAndHeightTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        runner.variable("duckId","citrus:randomNumber(4,false)");
+        runner.variable("duckId", "citrus:randomNumber(4,false)");
         executeDatabase(runner, "INSERT INTO Duck (id, color, height, material, sound, wings_state) \n" +
                 "VALUES ('${duckId}','black', 0.2, 'wood', 'quack', 'ACTIVE');");
         UniversalMessageResponse expected = new UniversalMessageResponse()
@@ -31,8 +30,8 @@ public class DuckUpdateTest extends UpdateClient {
         updateDuck(runner, "red", 0.5, "${duckId}", "wood", "quack", "ACTIVE");
 
         // check
-        validateDuckDatabase(runner, "${duckId}", "red", "0.5",  "wood", "quack", "ACTIVE");
-        validateResponsePayload(runner, HttpStatus.OK, expected, false);
+        validateDuckDatabase(runner, "${duckId}", "red", "0.5", "wood", "quack", "ACTIVE");
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         executeDatabase(runner, "DELETE FROM Duck WHERE id = ${duckId}");
@@ -42,7 +41,7 @@ public class DuckUpdateTest extends UpdateClient {
     @CitrusTest
     public void updateColorAndSoundTest(@Optional @CitrusResource TestCaseRunner runner) {
         // prepare
-        runner.variable("duckId","citrus:randomNumber(4,false)");
+        runner.variable("duckId", "citrus:randomNumber(4,false)");
         executeDatabase(runner, "INSERT INTO Duck (id, color, height, material, sound, wings_state) \n" +
                 "VALUES ('${duckId}','black', 0.2, 'wood', 'quack', 'ACTIVE');");
         UniversalMessageResponse expected = new UniversalMessageResponse()
@@ -52,7 +51,7 @@ public class DuckUpdateTest extends UpdateClient {
         updateDuck(runner, "green", 0.2, "${duckId}", "wood", "moo-moo", "ACTIVE");
 
         // check
-        validateDuckDatabase(runner, "${duckId}", "green", "0.2",  "wood", "moo-moo", "ACTIVE");
+        validateDuckDatabase(runner, "${duckId}", "green", "0.2", "wood", "moo-moo", "ACTIVE");
         validateResponseResources(runner, HttpStatus.OK, "response/duckUpdateTest/updateDuck.json", false);
 
         // repair

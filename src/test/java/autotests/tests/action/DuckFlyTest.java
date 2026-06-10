@@ -1,7 +1,6 @@
 package autotests.tests.action;
 
 import autotests.clients.FlyClient;
-import autotests.payloads.request.PropertiesRequest;
 import autotests.payloads.response.UniversalMessageResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
@@ -31,7 +30,7 @@ public class DuckFlyTest extends FlyClient {
         getFly(runner, "${duckId}");
 
         // check
-        validateResponsePayload(runner, HttpStatus.OK, expected, false);
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         executeDatabase(runner, "DELETE FROM Duck WHERE id = ${duckId}");
@@ -67,7 +66,7 @@ public class DuckFlyTest extends FlyClient {
         getFly(runner,"${duckId}");
 
         // check
-        validateResponse(runner, HttpStatus.OK, "{\"message\": \"Wings are not detected :(\"}", false);
+        validateResponse(runner, HttpStatus.OK, "{\"message\": \"Wings are not detected :(\"}");
 
         // repair
         executeDatabase(runner, "DELETE FROM Duck WHERE id = ${duckId}");
