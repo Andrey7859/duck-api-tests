@@ -1,6 +1,7 @@
 package autotests.tests.action;
 
 import autotests.clients.QuackClient;
+import autotests.payloads.response.QuackResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
@@ -23,12 +24,14 @@ public class DuckQuackTest extends QuackClient {
         String id = "1";
         String repetitionCount = "2";
         String soundCount = "3";
+        QuackResponse expected = new QuackResponse()
+                .sound("quack-quack, quack-quack, quack-quack");
 
         // do
         getQuack(runner, id, repetitionCount, soundCount);
 
         // check
-        validateResponse(runner, HttpStatus.OK, "{\"sound\": \"quack-quack, quack-quack, quack-quack\"}");
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         deleteDuck(runner, id);
@@ -42,12 +45,14 @@ public class DuckQuackTest extends QuackClient {
         String id = "2";
         String repetitionCount = "2";
         String soundCount = "3";
+        QuackResponse expected = new QuackResponse()
+                .sound("moo-moo, moo-moo, moo-moo");
 
         // do
         getQuack(runner, id, repetitionCount, soundCount);
 
         // check
-        validateResponse(runner, HttpStatus.OK, "{\"sound\": \"moo-moo, moo-moo, moo-moo\"}");
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         deleteDuck(runner, id);
