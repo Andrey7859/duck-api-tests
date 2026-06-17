@@ -11,17 +11,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.ContextConfiguration;
-
+import io.qameta.allure.Step;
+import static com.consol.citrus.actions.ExecuteSQLAction.Builder.sql;
+import static com.consol.citrus.actions.ExecuteSQLQueryAction.Builder.query;
 import static com.consol.citrus.dsl.MessageSupport.MessageBodySupport.fromBody;
 import static com.consol.citrus.http.actions.HttpActionBuilder.http;
 
-@ContextConfiguration(classes = {EndpointConfig.class})
+@ContextConfiguration(classes = { EndpointConfig.class })
 public class DuckClient extends TestNGCitrusSpringSupport {
     @Autowired
     protected HttpClient duckService;
 
-    public void createDuck(TestCaseRunner runner, String color, double height, String material, String sound, String wingsState) {
+    @Autowired
+    protected SingleConnectionDataSource testDb;
+
+    public void executeDatabase(TestCaseRunner runner, String query) {
+        runner.$(sql(testDb).statement(query));
+    }
+
+    @Step("Создание утки")
+    public void createDuck(TestCaseRunner runner, String color, double height, String material, String sound,
+            String wingsState) {
         String path = "/api/duck/create";
         String body = "{\n" +
                 "\"color\": \"" + color + "\",\n" +
@@ -39,6 +51,7 @@ public class DuckClient extends TestNGCitrusSpringSupport {
                         .body(body));
     }
 
+    @Step("Создание утки")
     public void createDuck(TestCaseRunner runner, Object userData) {
         String path = "/api/duck/create";
 
@@ -53,6 +66,7 @@ public class DuckClient extends TestNGCitrusSpringSupport {
                         .body(new ObjectMappingPayloadBuilder(userData, new ObjectMapper())));
     }
 
+    @Step("Удаление утки")
     public void deleteDuck(TestCaseRunner runner, String duckId) {
         String path = "/api/duck/delete";
 
@@ -64,39 +78,72 @@ public class DuckClient extends TestNGCitrusSpringSupport {
                         .queryParam("id", duckId));
     }
 
-    public void validateResponse(TestCaseRunner runner, HttpStatus status, String valueForValidate) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .receive()
-                        .response(status)
-                        .message()
-                        .type(MessageType.JSON)
-                        .body(valueForValidate));
+    @Step("Валидация с помощью String")
+    public void validateResponse(TestCaseRunner runner, HttpStatus status, String valueForValidate, boolean extractId) {
+        var response = http()
+                .client(duckService)
+                .receive()
+                .response(status)
+                .message()
+                .type(MessageType.JSON)
+                .body(valueForValidate);
+        if (extractId) {
+            response.extract(fromBody().expression("$.id", "duckId"));
+        }
+        runner.$(response);
     }
 
-    public void validateResponsePayload(TestCaseRunner runner, HttpStatus status, Object userData) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .receive()
-                        .response(status)
-                        .message()
-                        .type(MessageType.JSON)
-                        .body(new ObjectMappingPayloadBuilder(userData, new ObjectMapper())));
+    @Step("Валидация с помощью Payload")
+    public void validateResponsePayload(TestCaseRunner runner, HttpStatus status, Object userData, boolean extractId) {
+        var response = http()
+                .client(duckService)
+                .receive()
+                .response(status)
+                .message()
+                .type(MessageType.JSON)
+                .body(new ObjectMappingPayloadBuilder(userData, new ObjectMapper()));
+        if (extractId) {
+            response.extract(fromBody().expression("$.id", "duckId"));
+        }
+        runner.$(response);
     }
 
-    public void validateResponseResources(TestCaseRunner runner, HttpStatus status, String expectedPayload) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .receive()
-                        .response(status)
-                        .message()
-                        .type(MessageType.JSON)
-                        .body(new ClassPathResource(expectedPayload)));
+    @Step("Валидация с помощью Resources")
+    public void validateResponseResources(TestCaseRunner runner, HttpStatus status, String expectedPayload,
+            boolean extractId) {
+        var response = http()
+                .client(duckService)
+                .receive()
+                .response(status)
+                .message()
+                .type(MessageType.JSON)
+                .body(new ClassPathResource(expectedPayload));
+        if (extractId) {
+            response.extract(fromBody().expression("$.id", "duckId"));
+        }
+        runner.$(response);
     }
 
+    @Step("Валидация утки в БД (sql)")
+    public void validateDuckDatabase(TestCaseRunner runner, String id, String color, String height, String material,
+            String sound, String wingsState) {
+        runner.$(query(testDb)
+                .statement("SELECT * FROM Duck WHERE ID=" + id)
+                .validate("COLOR", color)
+                .validate("HEIGHT", height)
+                .validate("MATERIAL", material)
+                .validate("SOUND", sound)
+                .validate("WINGS_STATE", wingsState));
+    }
+
+    @Step("Удаление утки в БД (sql)")
+    public void validateDuckDeleteDatabase(TestCaseRunner runner, String id) {
+        runner.$(query(testDb)
+                .statement("SELECT COUNT(*) FROM Duck WHERE ID=" + id)
+                .validate("COUNT(*)", "0"));
+    }
+
+    @Step("Получение id утки")
     public String getDuckId(TestCaseRunner runner) {
         runner.$(
                 http()
