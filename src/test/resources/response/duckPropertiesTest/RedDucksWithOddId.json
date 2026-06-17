@@ -1,0 +1,7 @@
+{
+  "color": "red",
+  "height": 20.0,
+  "material": "rubber",
+  "sound": "quack",
+  "wingsState": "ACTIVE"
+}

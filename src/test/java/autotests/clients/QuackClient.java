@@ -3,20 +3,11 @@ package autotests.clients;
 import com.consol.citrus.TestCaseRunner;
 import io.qameta.allure.Step;
 
-import static com.consol.citrus.http.actions.HttpActionBuilder.http;
-
 public class QuackClient extends DuckClient {
     @Step("Утка крякает")
     public void getQuack(TestCaseRunner runner, String id, String repetitionCount, String soundCount) {
-        String path = "/api/duck/action/quack";
+        String path = "/api/duck/action/quack?id=" + id + "&repetitionCount=" + repetitionCount + "&soundCount=" + soundCount;
 
-        runner.$(
-                http()
-                        .client(duckService)
-                        .send()
-                        .get(path)
-                        .queryParam("id", id)
-                        .queryParam("repetitionCount", repetitionCount)
-                        .queryParam("soundCount", soundCount));
+        prepareGetRequest(runner, path);
     }
 }

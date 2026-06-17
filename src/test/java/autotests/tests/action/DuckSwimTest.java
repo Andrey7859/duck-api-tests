@@ -1,7 +1,6 @@
 package autotests.tests.action;
 
 import autotests.clients.SwimClient;
-import autotests.payloads.request.PropertiesRequest;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
@@ -48,6 +47,6 @@ public class DuckSwimTest extends SwimClient {
         getSwim(runner, "${duckId}");
 
         // check
-        validateResponse(runner, HttpStatus.NOT_FOUND, "{\"message\": \"Paws are not found ((((\"}", false);
+        validateResponse(runner, HttpStatus.NOT_FOUND, "{\"message\": \"Paws are not found ((((\"}");
     }
 }

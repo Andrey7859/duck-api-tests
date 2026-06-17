@@ -32,7 +32,7 @@ public class DuckQuackTest extends QuackClient {
         getQuack(runner, id, repetitionCount, soundCount);
 
         // check
-        validateResponsePayload(runner, HttpStatus.OK, expected, false);
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         executeDatabase(runner, "DELETE FROM Duck WHERE id =" + id);
@@ -55,7 +55,7 @@ public class DuckQuackTest extends QuackClient {
         getQuack(runner, id, repetitionCount, soundCount);
 
         // check
-        validateResponsePayload(runner, HttpStatus.OK, expected, false);
+        validateResponsePayload(runner, HttpStatus.OK, expected);
 
         // repair
         executeDatabase(runner, "DELETE FROM Duck WHERE id =" + id);
